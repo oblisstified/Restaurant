@@ -4,7 +4,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 
 import { auth } from "../firebase";
 
-const SignUpScreen = () => {
+const SignUpScreen = ({ navigation }) => {
   let [email, setEmail] = useState("");
   let [password, setPassword] = useState("");
   let [confirmPassword, setConfirmPassword] = useState("");
@@ -31,19 +31,20 @@ const SignUpScreen = () => {
 
     return validEmail && validPassword && validUsername;
   }
-  function PasswordsMatch() {
-    return password.valueOf() == confirmPassword.valueOf();
+  function passwordsMatch() {
+    return password === confirmPassword;
   }
 
   function handleSignUp() {
-    if (!validate() || !PasswordsMatch()) return;
+    if (!validate() || !passwordsMatch()) return;
+    let user;
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredentials) => {
         user = userCredentials.user;
         console.log(user.email);
+        navigation.navigate("Home");
       })
       .catch((error) => alert(error.message));
-    console.log(email);
   }
 
   return (
@@ -90,7 +91,7 @@ const SignUpScreen = () => {
           onChangeText={(newtext) => setConfirmPassword(newtext)}
         ></TextInput>
         <Text style={{ color: "red" }}>
-          {!PasswordsMatch() && <Text>Passwords do not match</Text>}
+          {!passwordsMatch() && <Text>Passwords do not match</Text>}
         </Text>
       </View>
 
