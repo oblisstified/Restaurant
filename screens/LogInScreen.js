@@ -1,4 +1,5 @@
-import React, { PureComponent } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import React, { PureComponent, useState } from "react";
 import {
   Text,
   View,
@@ -6,15 +7,37 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
+import { auth } from "../firebase";
 
 const LogInScreen = ({ navigation }) => {
+  let [email, setEmail] = useState("");
+  let [password, setPassword] = useState("");
+
+  function handleLogIn() {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredentials) => {
+        navigation.navigate("Home");
+      })
+      .catch((error) => alert(error.message));
+  }
+
   return (
     <View>
       <Text> logo </Text>
-      <TextInput style={styles.TextInput} placeholder="username"></TextInput>
-      <TextInput style={styles.TextInput} placeholder="password"></TextInput>
+      <TextInput
+        style={styles.TextInput}
+        placeholder="Email"
+        onChangeText={setEmail}
+      ></TextInput>
+      <TextInput
+        style={styles.TextInput}
+        placeholder="Password"
+        onChangeText={setPassword}
+      ></TextInput>
       <TouchableOpacity style={styles.loginButton}>
-        <Text style={{ alignContent: "center" }}>login</Text>
+        <Text style={{ alignContent: "center" }} onPress={handleLogIn}>
+          login
+        </Text>
       </TouchableOpacity>
       <Text>not a user? </Text>
       <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
